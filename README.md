@@ -130,9 +130,11 @@ Arquivo criado
 11- Criar rotas
 Edite o arquivo \petshop\routes\web.php
 
-Adicione a seguinte linha 
+Adicione as rotas abaixo
 
-Route::resource('clientes', 'ClienteController');
+Cria todas as Rotas utilizadas no projeto.
+Route::resource('clientes', 'ClienteController')->middleware('auth');
+Route::post('cliente', 'ClienteController@find')->name('clientes.find')->middleware('auth');
 
 para verificar as rotas criadas rode o comando 
 
@@ -144,13 +146,14 @@ resultado
 +--------+-----------+-------------------------+------------------+------------------------------------------------------------------------+--------------+
 |        | GET|HEAD  | /                       |                  | Closure                                                                | web          |
 |        | GET|HEAD  | api/user                |                  | Closure                                                                | api,auth:api |
-|        | POST      | clientes                | clientes.store   | App\Http\Controllers\ClienteController@store                           | web          |
-|        | GET|HEAD  | clientes                | clientes.index   | App\Http\Controllers\ClienteController@index                           | web          |
-|        | GET|HEAD  | clientes/create         | clientes.create  | App\Http\Controllers\ClienteController@create                          | web          |
-|        | PUT|PATCH | clientes/{cliente}      | clientes.update  | App\Http\Controllers\ClienteController@update                          | web          |
-|        | GET|HEAD  | clientes/{cliente}      | clientes.show    | App\Http\Controllers\ClienteController@show                            | web          |
-|        | DELETE    | clientes/{cliente}      | clientes.destroy | App\Http\Controllers\ClienteController@destroy                         | web          |
-|        | GET|HEAD  | clientes/{cliente}/edit | clientes.edit    | App\Http\Controllers\ClienteController@edit                            | web          |
+|        | POST      | cliente                 | clientes.find    | App\Http\Controllers\ClienteController@find                            | web,auth     |
+|        | POST      | clientes                | clientes.store   | App\Http\Controllers\ClienteController@store                           | web,auth     |
+|        | GET|HEAD  | clientes                | clientes.index   | App\Http\Controllers\ClienteController@index                           | web,auth     |
+|        | GET|HEAD  | clientes/create         | clientes.create  | App\Http\Controllers\ClienteController@create                          | web,auth     |
+|        | DELETE    | clientes/{cliente}      | clientes.destroy | App\Http\Controllers\ClienteController@destroy                         | web,auth     |
+|        | PUT|PATCH | clientes/{cliente}      | clientes.update  | App\Http\Controllers\ClienteController@update                          | web,auth     |
+|        | GET|HEAD  | clientes/{cliente}      | clientes.show    | App\Http\Controllers\ClienteController@show                            | web,auth     |
+|        | GET|HEAD  | clientes/{cliente}/edit | clientes.edit    | App\Http\Controllers\ClienteController@edit                            | web,auth     |
 |        | GET|HEAD  | home                    | home             | App\Http\Controllers\HomeController@index                              | web,auth     |
 |        | POST      | login                   |                  | App\Http\Controllers\Auth\LoginController@login                        | web,guest    |
 |        | GET|HEAD  | login                   | login            | App\Http\Controllers\Auth\LoginController@showLoginForm                | web,guest    |
@@ -163,9 +166,16 @@ resultado
 |        | GET|HEAD  | register                | register         | App\Http\Controllers\Auth\RegisterController@showRegistrationForm      | web,guest    |
 +--------+-----------+-------------------------+------------------+------------------------------------------------------------------------+--------------+
 
+
 12- Crud
 
 Iniciando pela Index
+
+Adicionar as duas linhas no Controller cliente
+use App\Cliente;
+use Session;
+
+Método index
 
 public function index()
     {
@@ -231,6 +241,7 @@ Modelo html
 @endsection
 
 
+Método Create
 
  public function create()
     {
@@ -244,25 +255,25 @@ Criado arquivo \petshop\resources\views\clientes\create.blade.php
 @section('content')
 <div class="container">
     
-	<h1>
-		<a style="text-decoration:none; color:black;"href="{{ route('clientes.index') }}">Petshop</a>
-	</h1>
+    <h1>
+        <a style="text-decoration:none; color:black;"href="{{ route('clientes.index') }}">Petshop</a>
+    </h1>
 
     <h3>Clientes <small>Criar</small></h3>
 
     <form class="mb-4" action="{{ route('clientes.store') }}" method="POST">
-    	@csrf
+        @csrf
         <div class="row">
             <div class="col-sm-5">
-            	<input type="text" class="form-control @error('nome') is-invalid @enderror" placeholder="Nome Cliente" name="nome" value="{{ old('nome') }}">
+                <input type="text" class="form-control @error('nome') is-invalid @enderror" placeholder="Nome Cliente" name="nome" value="{{ old('nome') }}">
             </div>
 
             <div class="col-sm-5">
-            	<input type="text" class="form-control @error('telefone') is-invalid @enderror" placeholder="Telefone Cliente" name="telefone" value="{{ old('telefone') }}">
+                <input type="text" class="form-control @error('telefone') is-invalid @enderror" placeholder="Telefone Cliente" name="telefone" value="{{ old('telefone') }}">
             </div>
 
             <div class="col-sm-2">
-            	<input class="bnt form-control btn-primary" type="submit" value="Salvar"/>
+                <input class="bnt form-control btn-primary" type="submit" value="Salvar"/>
             </div>
         </div>
     </form>
@@ -271,6 +282,7 @@ Criado arquivo \petshop\resources\views\clientes\create.blade.php
 @endsection
 
 
+Método store
 
 Inserção do cliente e retorno para pagina clientes
 
@@ -336,6 +348,7 @@ Criado arquivo \petshop\resources\views\clientes\edit.blade.php
 @endsection
 
 
+Método update
 
  public function update(Request $request, $id)
     {
@@ -356,6 +369,7 @@ Criado arquivo \petshop\resources\views\clientes\edit.blade.php
         return redirect('clientes');
     }
 
+Método destroy
 
     public function destroy($id)
     {
@@ -367,6 +381,8 @@ Criado arquivo \petshop\resources\views\clientes\edit.blade.php
 
         return redirect('clientes');
     }
+
+Método find
 
     public function find(Request $request)
     {
@@ -430,3 +446,23 @@ Criado arquivo \petshop\resources\views\clientes\find.blade.php
 </div>
 @endsection
 
+Ativando as notificações
+
+Acesse o arquivo \petshop\resources\views\layouts\app.blade.php e adicione o css e js do Toastr
+
+Obs: Comente o arquivo app.js que esta no head
+<!-- Scripts -->
+    <!-- <script src="{{ asset('js/app.js') }}"></script> -->
+
+<!-- Toast -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/css/toastr.min.css">
+
+<script src="{{ asset('js/app.js') }}"></script> 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/js/toastr.min.js"></script>
+<script>    
+    
+    @if(Session::has('success'))     
+        toastr.success("{{ Session::get('success') }}")
+    @endif
+
+</script>

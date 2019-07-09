@@ -15,7 +15,7 @@ class ClienteController extends Controller
      */
     public function index()
     {
-        $clientes = Cliente::paginate(2);
+        $clientes = Cliente::paginate(10);
 
         return view('clientes.index', compact('clientes'));
     }
@@ -122,8 +122,7 @@ class ClienteController extends Controller
     public function find(Request $request)
     {
         
-        $clientes = Cliente::where('nome','like', '%'.$request->nome.'%')->get();
-
+        $clientes = Cliente::where('nome','like', '%'.$request->nome.'%')->paginate(10);
 
         return view('clientes.find', compact('clientes'));
     }

@@ -86,6 +86,7 @@
 
                 <div class="links">
                     <a href="{{ route('clientes.index') }}">Cadastro de Clientes</a>
+                    <a href="{{ route('pacientes.index') }}">Cadastro de Pacientes</a>
                 </div>
             </div>
         </div>

@@ -2,10 +2,6 @@
 
 @section('content')
 <div class="container">
-    
-	<h1>
-		<a style="text-decoration:none; color:black;"href="{{ route('clientes.index') }}">Petshop</a>
-	</h1>
 
     <h3>Clientes <small>Editar</small></h3>
 

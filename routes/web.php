@@ -19,5 +19,10 @@ Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
+// Rotas de clientes
 Route::resource('clientes', 'ClienteController')->middleware('auth');
 Route::post('cliente', 'ClienteController@find')->name('clientes.find')->middleware('auth');
+
+// Rotas de pacientes
+Route::resource('pacientes', 'PacienteController')->middleware('auth');
+Route::post('paciente', 'PacienteController@find')->name('pacientes.find')->middleware('auth');
